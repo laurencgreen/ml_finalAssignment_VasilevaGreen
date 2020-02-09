@@ -41,7 +41,8 @@ def evaluation_main(y_test, X_test, model, model_name, history=None):
         plot(model, history)
         
     else:
-        model_pred = model.predict(X_test)
+        model_pred = model.predict(X_test[-1])
+        # clf.predict([x[-1]])
         get_evaluation_metrics(y_test, model_pred)
 
     print("Finished Evaluation")
