@@ -27,12 +27,9 @@ def apply_lexicon(data, lex_list_dict):
                         processed_tweet.append(score)
                     else:
                         processed_tweet.append(0)  # token is not sentiment specific
-        processed.append(processed_tweet)
-    print(len(processed), len(data))
-
+        processed.append(processed_tweet)       
     averages = average_scores(processed)
-    print(len(averages))
-                    
+    print(len(averages)) 
     return averages
 
 def lex_main(data, LEXICON_TYPE="nrc"): #parameter lexicon type, # data

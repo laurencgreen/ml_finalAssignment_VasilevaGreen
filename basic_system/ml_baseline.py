@@ -5,6 +5,10 @@ import pickle
 from utils import create_new_folder, get_column_list, concat_dataframes, split_intensity_labels, read_subsets
 from sklearn.metrics import classification_report
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.pipeline import Pipeline
+
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer, TfidfTransformer
+
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction import DictVectorizer
 import sys
@@ -13,17 +17,25 @@ from w2v import open_embeddings_model, embed_sentences
 from lex2v import lex_main
 # from s2v import dl_sent_matrix
 
-
-
 def train_model(X_train, y_train, X_test, y_test, model_name):
     """Input X_train, y_train, X_test, y_test and classification model. Print classification metrics -> see
     get_metrics() function"""
     print("Training model")
-    svm_model = svm.SVC(kernel="rbf")
-    svm_model.fit(X_train, y_train)
-    print(svm_model.score(X_test, y_test))
-    save_classification_model(model_name, svm_model)
 
+    if model_name == "svm":
+        model = svm.LinearSVC(max_iter=10000, dual=False, C=0.1)
+
+    clf = Pipeline([('vect', CountVectorizer()),
+                    ('frm', TfidfTransformer()),
+                ('clf', model)])
+                
+    clf.fit(X_train, y_train)
+    save_classification_model(model_name, clf)
+
+
+def bow_pipeline(model):
+    clf = Pipeline([('vect', CountVectorizer()), ('frm', TfidfTransformer()), ('clf', model)])
+    return clf
 
 def save_classification_model(filename, model):
     """Input filename as string and classification model. If not already existing, create following directory and
@@ -41,23 +53,7 @@ def fit_transform_vec(train_features_df, validation_features_df, test_features_d
     
     X_test = test_features_df.tweets.values
     X_train = train_features_df.tweets.values.tolist()
-    X_val = validation_features_df.tweets.values.tolist()
-    split_value = len(X_train)
-    
-    X_combinaed = X_train.append(X_val)
 
-
-    # X_combined = np.concatenate((X_train, X_val), axis=0)
-
-   
-    X_combined = vec.fit_transform(X_combined).toarray()
-    # X_train,  X_val = np.split(X_combined, split_value)
-
-    X_train = X_combined[:split_value]
-    X_val = X_combined[split_value:]
-
-    # X_val = vec.fit_transform(X_val).toarray()
-    # X_val = vec.transform(X_val).toarray()
     X_test = vec.transform(X_test).toarray()
 
     return X_train, X_val, X_test
@@ -134,8 +130,16 @@ def ml_main(train_filepath, validation_filepath, test_filepath, model_name, PREP
         columns = ["ID", "affect_dimension", "intensity_scores", "intensity_descriptions", "tweets"]
         train_df, validation_df, test_df = read_subsets(train_filepath, validation_filepath, test_filepath, columns)
 
-    X_train, y_train, X_val, y_val, X_test, y_test = encode_data(train_df, validation_df, test_df, EMBEDDINGS, LEXICON)
-    print(X_train.shape, X_val.shape, X_test.shape)
+    train_df = pd.concat([train_df, validation_df], axis=0)
+
+    X_train = train_df.tweets.values
+    y_train = train_df.intensity_scores.values
+
+    X_test = test_df.tweets.values
+    y_test = test_df.intensity_scores.values
+
+    # X_train, y_train, X_val, y_val, X_test, y_test = encode_data(train_df, validation_df, test_df, EMBEDDINGS, LEXICON)
+    # print(X_train.shape, X_val.shape, X_test.shape)
 
     train_model(X_train, y_train, X_test, y_test, model_name)
 
