@@ -1,3 +1,5 @@
+#adapted from https://keras.io/examples/imdb_bidirectional_lstm/
+
 from keras.models import Sequential
 from keras.layers import Dense, Embedding, Activation, Dropout, SpatialDropout1D, LSTM, Bidirectional
 from keras.callbacks import EarlyStopping
@@ -30,11 +32,7 @@ def build_bilstm_model(MAX_NB_WORDS, EMBEDDING_DIM, word_index, EMBEDDINGS):
     model.add(Bidirectional(LSTM(300, dropout=0.3, recurrent_dropout=0.3)))
     model.add(Dense(1024, activation='relu'))
     model.add(Dropout(0.8))
-
     model.add(Dense(7, activation='softmax'))
-    # model.add(Dense(7))
-    # model.add(Activation('softmax'))
-
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     print(model.summary())
     return model 
