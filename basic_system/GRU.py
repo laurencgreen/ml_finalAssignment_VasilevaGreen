@@ -1,3 +1,5 @@
+#adapted from https://www.kaggle.com/davidzhao365/review-sentiment-analysis-with-rnn-and-gru
+
 from keras.models import Sequential
 from keras.layers import Dense, Embedding, Activation, Dropout, SpatialDropout1D, LSTM, GRU
 from keras.callbacks import EarlyStopping
