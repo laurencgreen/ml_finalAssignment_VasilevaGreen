@@ -1,3 +1,5 @@
+#adapted from https://keras.io/examples/imdb_lstm/
+
 from keras.models import Sequential
 from keras.layers import Dense, Embedding, SpatialDropout1D, LSTM
 import sys
