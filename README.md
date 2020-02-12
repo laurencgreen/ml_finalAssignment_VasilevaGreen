@@ -26,9 +26,8 @@ Report: https://www.overleaf.com/read/bnrzjqndtvng
 | argv[4] | LEXICON           |"True" (default NRC) vs "False| 
 
 
-* All combinations of the arguments should run.
-e.g. *python main.py lstm sswe-u True False*
+* All combinations of the arguments should run  --> e.g. *python main.py lstm sswe-u True False*
 
-word embedding models = {1: fasttext, 2: glove, 3-5: three different SSWE}
-sentence embedding models = {1: sentenceTransformerBERT-Base-Nli-Mean, 2: Infersent}
-lexicon = {1: NRC-VAD} this lexicon can be found in the following directory: "data/lexicon"
+* word embedding models = {1: fasttext, 2: glove, 3-5: three different SSWE}
+* sentence embedding models = {1: sentenceTransformerBERT-Base-Nli-Mean, 2: Infersent}
+* lexicon = {1: NRC-VAD} this lexicon can be found in the following directory: "data/lexicon"
